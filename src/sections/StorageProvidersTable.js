@@ -20,8 +20,8 @@ const TABLE_HEAD = [
   { id: 'id', label: 'ID', alignRight: false, width: "60%" },
   { id: 'region', label: 'Region', alignRight: false , width: "25%" },
   { id: 'power', label: 'Power', alignRight: false , width: "25%" },
-  { id: 'price', label: 'Price', alignRight: false , width: "25%" },
-  { id: 'price_fil', label: 'Price FIL', alignRight: false , width: "25%" }
+  { id: 'price', label: 'Storage Price (TiB/year)', alignRight: false , width: "25%" },
+  { id: 'price_fil', label: 'Storage Price (TiB/year) FIL', alignRight: false , width: "25%" }
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -51,6 +51,13 @@ function applySortFilter(array, comparator, query) {
     return filter(array, (_sp) => _sp.id.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis?.map((el) => el[0]);
+}
+
+function FormatSize(size, decimals = 2) {
+  if (0 === size) return "0 size";
+  const c = 0 > decimals ? 0 : decimals;
+  const d = Math.floor(Math.log(size) / Math.log(1024));
+  return parseFloat((size / Math.pow(1024, d)).toFixed(c)) + " " + ["GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"][d];
 }
 
 export default function StorageProvidersTable() {
@@ -114,7 +121,7 @@ export default function StorageProvidersTable() {
                   <TableRow key={row.id}>
                     <TableCell style={{ width: "20%" }}>{row.id}</TableCell>
                     <TableCell style={{ width: "20%" }}>{row.region}</TableCell>
-                    <TableCell style={{ width: "20%" }}>{row.power}</TableCell>
+                    <TableCell style={{ width: "20%" }}>{FormatSize(row.power)}</TableCell>
                     <TableCell style={{ width: "20%" }}>{row.price}</TableCell>
                     <TableCell style={{ width: "20%" }}>{row.price_fil}</TableCell>
                   </TableRow>

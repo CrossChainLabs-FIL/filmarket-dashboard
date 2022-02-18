@@ -13,7 +13,15 @@ export default function Dashboard() {
   useEffect(() => {
     setState({ loading: true });
     nearClient.callFunction("get_global_price").then((global_price) => {
-      setState({ loading: false, globalPrice: global_price });
+      const digits = Math.trunc(global_price).toString().length;
+      let precision = digits;
+      if (digits > 1) {
+        precision += 2;
+      } else {
+        precision += 4;
+      }
+      let formated_price = parseFloat(global_price).toPrecision(precision);
+      setState({ loading: false, globalPrice: formated_price });
     });
   }, [setState]);
 
@@ -32,7 +40,7 @@ export default function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
             <CardWidget
-              title="Average storage price (TB/year)"
+              title="Average storage price (TiB/year)"
               percent={2.6}
               since='than last week'
               value={'$ ' + ((state.globalPrice) ? (state.globalPrice) : '')}
@@ -57,7 +65,7 @@ export default function Dashboard() {
               title="Network Power"
               percent={-0.1}
               since='than last month'
-              value='12.04 EB'
+              value='12.04 EiB'
               chartColor={theme.palette.chart.red[0]}
               chartData={[8, 9, 31, 8, 16, 37, 8, 33, 46, 31]}
             />

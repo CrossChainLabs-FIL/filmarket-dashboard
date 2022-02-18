@@ -32,7 +32,7 @@ export default function StoragePriceChart() {
   return (
     <Card>
       <CardHeader
-        title="Average storage price (TB/year)"
+        title="Average storage price (TiB/year)"
         subheader=""
       />
 
