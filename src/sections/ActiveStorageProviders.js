@@ -4,9 +4,13 @@ import { useTheme, styled } from '@mui/material/styles';
 import { Card, CardHeader } from '@mui/material';
 import { number } from '../utils/format';
 import { CustomChart } from '../components/chart';
+import { Near } from '../utils/near';
+import { useState, useEffect } from 'react';
 
 const CHART_HEIGHT = 392;
 const LEGEND_HEIGHT = 72;
+
+const nearClient = new Near();
 
 const ChartWrapperStyle = styled('div')(({ theme }) => ({
   height: CHART_HEIGHT,
@@ -24,10 +28,20 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
   }
 }));
 
-const CHART_DATA = [1000, 300, 2300, 532];
-
 export default function ActiveStorageProviders() {
+  const [state, setState] = useState({ loading: true, chartData: [0, 0, 0, 0] });
   const theme = useTheme();
+
+  useEffect(() => {
+    setState({ loading: true });
+    nearClient.callFunction("get_active_per_region").then((active_per_region) => {
+      let north_america = (active_per_region?.north_america) ? active_per_region.north_america : 0;
+      let europe =  (active_per_region?.europe) ? active_per_region.europe : 0;
+      let asia = (active_per_region?.asia) ? active_per_region.asia : 0;
+      let other = (active_per_region?.other) ? active_per_region.other : 0;
+      setState({ loading: false, chartData: [north_america, europe, asia, other] });
+    });
+  }, [setState]);
 
   const chartOptions = merge(CustomChart(), {
     colors: [
@@ -72,7 +86,7 @@ export default function ActiveStorageProviders() {
     <Card>
       <CardHeader title="Active Storage Providers" />
       <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="donut" series={CHART_DATA} options={chartOptions} height={280} />
+        <ReactApexChart type="donut" series={state.chartData} options={chartOptions} height={280} />
       </ChartWrapperStyle>
     </Card>
   );

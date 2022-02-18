@@ -1,14 +1,33 @@
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid } from '@mui/material';
+import { Container, Grid, CircularProgress } from '@mui/material';
+import { useState, useEffect } from 'react';
 import Page from '../components/Page';
 import { StorageProvidersTable, StoragePriceChart, CardWidget, ActiveStorageProviders } from '../sections';
+import { Near } from '../utils/near';
+
+const nearClient = new Near();
 
 export default function Dashboard() {
+  const [state, setState] = useState({ loading: true, globalPrice: '' });
+
+  useEffect(() => {
+    setState({ loading: true });
+    nearClient.callFunction("get_global_price").then((global_price) => {
+      setState({ loading: false, globalPrice: global_price });
+    });
+  }, [setState]);
+
   const theme = useTheme();
   const  themeStretch  = false;
 
   return (
     <Page title="FilMarket">
+
+    <div style={{marginLeft: '45%',}}>
+      {state.loading && <CircularProgress color='primary' />} 
+    </div>
+
+    {!state.loading &&
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
@@ -16,7 +35,7 @@ export default function Dashboard() {
               title="Average storage price (TB/year)"
               percent={2.6}
               since='than last week'
-              value='$ 0.05'
+              value={'$ ' + ((state.globalPrice) ? (state.globalPrice) : '')}
               chartColor={theme.palette.primary.main}
               chartData={[5, 18, 12, 51, 68, 11, 39, 37, 27, 20]}
             />
@@ -57,7 +76,7 @@ export default function Dashboard() {
           </Grid>
 
         </Grid>
-      </Container>
+      </Container>}
     </Page>
   );
 }
