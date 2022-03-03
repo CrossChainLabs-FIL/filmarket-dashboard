@@ -1,7 +1,6 @@
 const axios = require('axios');
 const { Buffer } = require('buffer');
-const { API } = require ('../config');
-const ACCOUNT_ID = "filmarket_v1.testnet";
+const { API, ACCOUNT_ID } = require ('../config');
 
 class Near {
   constructor(timeout = 30000) {
@@ -44,13 +43,6 @@ class Near {
     return this.parseResponse(response?.data?.result?.result);
   }
 }
-
-const nearClient = new Near()
-
-nearClient.callFunction("get_storage_providers");
-nearClient.callFunction("get_active_per_region");
-nearClient.callFunction("get_price_per_region");
-nearClient.callFunction("get_global_price");
 
 module.exports = {
   Near

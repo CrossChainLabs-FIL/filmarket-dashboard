@@ -4,6 +4,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import { useState, useEffect } from 'react';
 import { filter } from 'lodash';
 import { Near } from '../utils/near';
+import { toUSD, formatDigits } from '../utils/format';
 import {
   Card,
   Table,
@@ -25,6 +26,7 @@ const TABLE_HEAD = [
 ];
 
 function descendingComparator(a, b, orderBy) {
+  console.log('a[orderBy]', a[orderBy])
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -39,6 +41,8 @@ function getComparator(order, orderBy) {
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
+
+
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array?.map((el, index) => [el, index]);
@@ -60,6 +64,21 @@ function FormatSize(size, decimals = 2) {
   return parseFloat((size / Math.pow(1024, d)).toFixed(c)) + " " + ["GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"][d];
 }
 
+function ValidateNumber(n) {
+  if(isNaN(n)){
+    return false;
+  }
+
+  return true;
+}
+
+const Regions = {
+  1: "North America", 
+  2: "Europe", 
+  3: "Asia", 
+  4: "Other" 
+};
+
 export default function StorageProvidersTable() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -70,9 +89,29 @@ export default function StorageProvidersTable() {
 
   useEffect(() => {
     setState({ loading: true });
-    nearClient.callFunction("get_storage_providers").then((storage_providers) => {
-      setState({ loading: false, storageProviders: storage_providers });
+
+    nearClient.callFunction("get_fil_price").then((fil_price) => {
+      nearClient.callFunction("get_storage_providers").then((storage_providers) => {
+        setState({
+          loading: false, storageProviders: storage_providers.filter(function (sp) {
+            if (ValidateNumber(sp.price) && ValidateNumber(sp.power)) {
+              return sp;
+            }
+          }).map((sp) => (
+            {
+              id: sp.id,
+              region: Regions[sp.region],
+              price: formatDigits(toUSD(sp.price, fil_price)),
+              price_fil: formatDigits(sp.price),
+              power: formatDigits(sp.power),
+              powerFormatSize: FormatSize(sp.power)
+            }))
+        });
+      });
+
+
     });
+
   }, [setState]);
 
   const handleRequestSort = (event, property) => {
@@ -121,9 +160,9 @@ export default function StorageProvidersTable() {
                   <TableRow key={row.id}>
                     <TableCell style={{ width: "20%" }}>{row.id}</TableCell>
                     <TableCell style={{ width: "20%" }}>{row.region}</TableCell>
-                    <TableCell style={{ width: "20%" }}>{FormatSize(row.power)}</TableCell>
-                    <TableCell style={{ width: "20%" }}>{row.price}</TableCell>
-                    <TableCell style={{ width: "20%" }}>{row.price_fil}</TableCell>
+                    <TableCell style={{ width: "20%" }}>{row.powerFormatSize}</TableCell>
+                    <TableCell style={{ width: "20%" }}>{row.price + " USD"}</TableCell>
+                    <TableCell style={{ width: "20%" }}>{row.price_fil + " FIL"}</TableCell>
                   </TableRow>
                 ))}
               {emptyRows > 0 && (

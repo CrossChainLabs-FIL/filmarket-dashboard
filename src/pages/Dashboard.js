@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Page from '../components/Page';
 import { StorageProvidersTable, StoragePriceChart, CardWidget, ActiveStorageProviders } from '../sections';
 import { Near } from '../utils/near';
+import { formatDigits } from '../utils/format';
 
 const nearClient = new Near();
 
@@ -13,15 +14,12 @@ export default function Dashboard() {
   useEffect(() => {
     setState({ loading: true });
     nearClient.callFunction("get_global_price").then((global_price) => {
-      const digits = Math.trunc(global_price).toString().length;
-      let precision = digits;
-      if (digits > 1) {
-        precision += 2;
-      } else {
-        precision += 4;
-      }
-      let formated_price = parseFloat(global_price).toPrecision(precision);
-      setState({ loading: false, globalPrice: formated_price });
+      nearClient.callFunction("get_fil_price").then((fil_price) => {
+        setState({ 
+          loading: false, 
+          globalPrice: formatDigits(global_price), 
+          filPrice: formatDigits(fil_price) })
+      });
     });
   }, [setState]);
 
@@ -54,7 +52,7 @@ export default function Dashboard() {
               title="FIL price"
               percent={0.2}
               since='than last 24 hours'
-              value='$ 250.6'
+              value={'$ ' + ((state.filPrice) ? (state.filPrice) : '')}
               chartColor={theme.palette.chart.blue[0]}
               chartData={[20, 41, 63, 33, 28, 35, 50, 46, 11, 26]}
             />
