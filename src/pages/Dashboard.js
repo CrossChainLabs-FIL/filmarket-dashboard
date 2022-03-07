@@ -35,8 +35,6 @@ export default function Dashboard() {
         powerPercentage = ((history[0].power - history[30].power) / history[30].power) * 100;
       }
 
-      console.log(history);
-
       nearClient.callFunction("get_latest_price_per_region").then((latest_price_per_region) => {
         let global_price = latest_price_per_region.global;
         let fil_price = latest_price_per_region.fil_price;
