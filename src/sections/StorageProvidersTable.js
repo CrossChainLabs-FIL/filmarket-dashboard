@@ -4,7 +4,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import { useState, useEffect } from 'react';
 import { filter } from 'lodash';
 import { Near } from '../utils/near';
-import { toUSD, formatDigits } from '../utils/format';
+import { toUSD, formatDigits, formatSizeFromGiB } from '../utils/format';
 import {
   Card,
   Table,
@@ -57,13 +57,6 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis?.map((el) => el[0]);
 }
 
-function FormatSize(size, decimals = 2) {
-  if (0 === size) return "0 size";
-  const c = 0 > decimals ? 0 : decimals;
-  const d = Math.floor(Math.log(size) / Math.log(1024));
-  return parseFloat((size / Math.pow(1024, d)).toFixed(c)) + " " + ["GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"][d];
-}
-
 function ValidateNumber(n) {
   if(isNaN(n)){
     return false;
@@ -90,7 +83,8 @@ export default function StorageProvidersTable() {
   useEffect(() => {
     setState({ loading: true });
 
-    nearClient.callFunction("get_fil_price").then((fil_price) => {
+    nearClient.callFunction("get_latest_price_per_region").then((latest_price_per_region) => {
+      let fil_price = latest_price_per_region?.fil_price;
       nearClient.callFunction("get_storage_providers").then((storage_providers) => {
         setState({
           loading: false, storageProviders: storage_providers.filter(function (sp) {
@@ -104,7 +98,7 @@ export default function StorageProvidersTable() {
               price: formatDigits(toUSD(sp.price, fil_price)),
               price_fil: formatDigits(sp.price),
               power: formatDigits(sp.power),
-              powerFormatSize: FormatSize(sp.power)
+              powerFormatSize: formatSizeFromGiB(sp.power)
             }))
         });
       });

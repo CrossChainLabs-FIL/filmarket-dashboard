@@ -39,3 +39,17 @@ export function formatDigits(value) {
 
   return parseFloat(value).toPrecision(precision);
 }
+
+export function formatSizeFromGiB(size, decimals = 2) {
+  if (0 === size) return "0 size";
+  const c = 0 > decimals ? 0 : decimals;
+  const d = Math.floor(Math.log(size) / Math.log(1024));
+  return parseFloat((size / Math.pow(1024, d)).toFixed(c)) + " " + ["GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"][d];
+}
+
+export function formatSizeFromTiB(size, decimals = 2) {
+  if (0 === size) return "0 size";
+  const c = 0 > decimals ? 0 : decimals;
+  const d = Math.floor(Math.log(size) / Math.log(1024));
+  return parseFloat((size / Math.pow(1024, d)).toFixed(c)) + " " + ["TiB", "PiB", "EiB", "ZiB", "YiB"][d];
+}
