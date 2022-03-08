@@ -32,11 +32,11 @@ export function formatDigits(value) {
   const digits = Math.trunc(value).toString().length;
   let precision = digits;
   if (digits > 1) {
-    precision += 2;
+    precision = 2;
   } else if (value > 0.0001) {
-    precision += 4;
+    precision = 4;
   } else {
-    precision += 10;
+    precision = 10;
   }
 
   return parseFloat(value).toFixed(precision);

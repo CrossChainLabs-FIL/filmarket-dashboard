@@ -2,7 +2,7 @@ const axios = require('axios');
 const { Buffer } = require('buffer');
 const { API, ACCOUNT_ID } = require ('../config');
 
-class Near {
+export class Near {
   constructor(timeout = 30000) {
       this.api = API;
       this.account_id = ACCOUNT_ID;
@@ -44,7 +44,4 @@ class Near {
   }
 }
 
-module.exports = {
-  Near
-};
 
