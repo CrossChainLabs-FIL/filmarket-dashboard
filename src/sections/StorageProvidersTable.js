@@ -21,16 +21,23 @@ const TABLE_HEAD = [
   { id: 'id', label: 'ID', alignRight: false, width: "60%" },
   { id: 'region', label: 'Region', alignRight: false , width: "25%" },
   { id: 'power', label: 'Power', alignRight: false , width: "25%" },
-  { id: 'price', label: 'Storage Price (TiB/year)', alignRight: false , width: "25%" },
+  { id: 'price', label: 'Storage Price (TiB/year) USD', alignRight: false , width: "25%" },
   { id: 'price_fil', label: 'Storage Price (TiB/year) FIL', alignRight: false , width: "25%" }
 ];
 
 function descendingComparator(a, b, orderBy) {
-  console.log('a[orderBy]', a[orderBy])
-  if (b[orderBy] < a[orderBy]) {
+  let a_to_cmp = a[orderBy];
+  let b_to_cmp = b[orderBy];
+
+  if (orderBy === 'price' || orderBy === 'price_fil') {
+    a_to_cmp = parseFloat(a[orderBy]);
+    b_to_cmp = parseFloat(b[orderBy]);
+  }
+
+  if (b_to_cmp < a_to_cmp) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b_to_cmp > a_to_cmp) {
     return 1;
   }
   return 0;
@@ -97,8 +104,8 @@ export default function StorageProvidersTable() {
               region: Regions[sp.region],
               price: formatDigits(toUSD(sp.price, fil_price)),
               price_fil: formatDigits(sp.price),
-              power: formatDigits(sp.power),
-              powerFormatSize: formatSizeFromGiB(sp.power)
+              power: sp.power,
+              powerFormatSize: formatSizeFromGiB(formatDigits(sp.power))
             }))
         });
       });

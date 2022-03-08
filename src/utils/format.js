@@ -33,11 +33,13 @@ export function formatDigits(value) {
   let precision = digits;
   if (digits > 1) {
     precision += 2;
-  } else {
+  } else if (value > 0.0001) {
     precision += 4;
+  } else {
+    precision += 10;
   }
 
-  return parseFloat(value).toPrecision(precision);
+  return parseFloat(value).toFixed(precision);
 }
 
 export function formatSizeFromGiB(size, decimals = 2) {
