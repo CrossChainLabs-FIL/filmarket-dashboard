@@ -1,7 +1,8 @@
-import { alpha, styled } from '@mui/material/styles';
-import { withStyles } from "@material-ui/core/styles";
-import { Box, AppBar, Toolbar, Typography, Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { AppBar, Toolbar, Typography, Container } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import logo from "../../../logo.svg";
 
 const HEIGHT = 92;
 const BG_COLOR = '#f3f6f8';
@@ -19,15 +20,34 @@ const TextTypography = styled(Typography)(({ theme }) => ({
     lineHeight: theme.typography.h3.lineHeight,
 }));
 
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1
+    },
+    menuButton: {
+      marginRight: theme.spacing(2)
+    },
+    title: {
+      flexGrow: 1,
+      textAlign: "center"
+    },
+    logo: {
+      maxWidth: 40,
+      marginRight: '10px'
+    }
+  })
+);
+
 export default function DashboardNavbar() {
   const theme = useTheme();
+  const classes = useStyles();
 
   return (
     <AppBar sx={{ boxShadow: 0, bgcolor: BG_COLOR }}>
       <ToolbarStyle disableGutters>
-
+          <img src={logo} alt="" className={classes.logo} />
           <TextTypography>FilMarket</TextTypography>
-
       </ToolbarStyle>
     </AppBar>
   );
