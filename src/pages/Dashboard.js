@@ -5,6 +5,7 @@ import Page from '../components/Page';
 import { StorageProvidersTable, StoragePriceChart, CardWidget, ActiveStorageProviders } from '../sections';
 import { Near } from '../utils/near';
 import { formatDigits, formatSizeFromTiB } from '../utils/format';
+import { Footer } from '../components/Footer';
 
 const nearClient = new Near();
 
@@ -112,7 +113,9 @@ export default function Dashboard() {
           </Grid>
 
         </Grid>
+        <Footer/>
       </Container>}
+
     </Page>
   );
 }
