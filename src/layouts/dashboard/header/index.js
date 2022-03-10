@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { AppBar, Toolbar, Typography, Container } from '@mui/material';
+import { AppBar, Toolbar, Typography, Grid, Container } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import logo from "../../../logo.svg";
@@ -46,8 +46,13 @@ export default function DashboardNavbar() {
   return (
     <AppBar sx={{ boxShadow: 0, bgcolor: BG_COLOR }}>
       <ToolbarStyle disableGutters>
-          <img src={logo} alt="" className={classes.logo} />
-          <TextTypography>FilMarket</TextTypography>
+        <Container maxWidth='xl'>
+          <Grid container>
+            <Grid item xs={12} md={0}/>
+            <img src={logo} alt="" className={classes.logo} />
+            <TextTypography>FilMarket</TextTypography>
+          </Grid>
+        </Container>
       </ToolbarStyle>
     </AppBar>
   );
