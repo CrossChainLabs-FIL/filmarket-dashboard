@@ -21,8 +21,8 @@ export default function StoragePriceChart() {
     nearClient.callFunction("get_price_per_region_list").then((price_per_region_list) => {
       let history = price_per_region_list.sort((a, b) => parseFloat(a.timestamp) - parseFloat(b.timestamp));
 
-      if (history.length > 25) {
-        history = history.slice(-25);
+      if (history.length > 20) {
+        history = history.slice(-20);
       }
 
       let dataNorthAmerica = [];
