@@ -108,9 +108,28 @@ export default function StorageProvidersTable() {
               powerFormatSize: formatSizeFromGiB(formatDigits(sp.power))
             }))
         });
+      }).catch( () => {
+        fetch('/sps.json')
+          .then(response => response.json())
+          .then(data => {
+            let storage_providers = data;
+            setState({
+              loading: false, storageProviders: storage_providers.filter(function (sp) {
+                if (ValidateNumber(sp.price) && ValidateNumber(sp.power)) {
+                  return sp;
+                }
+              }).map((sp) => (
+                {
+                  id: sp.id,
+                  region: Regions[sp.region],
+                  price: formatDigits(toUSD(sp.price, fil_price)),
+                  price_fil: formatDigits(sp.price),
+                  power: sp.power,
+                  powerFormatSize: formatSizeFromGiB(formatDigits(sp.power))
+                }))
+            });
+          });
       });
-
-
     });
 
   }, [setState]);
