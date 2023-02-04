@@ -50,7 +50,7 @@ export default function DashboardNavbar() {
           <Grid container>
             <Grid item xs={12} md={0}/>
             <img src={logo} alt="" className={classes.logo} />
-            <TextTypography>FilMarket</TextTypography>
+            <TextTypography>FilMarket Hyperspace</TextTypography>
           </Grid>
         </Container>
       </ToolbarStyle>
