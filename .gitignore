@@ -106,3 +106,5 @@ dist
 .DS_Store
 
 build
+build.zip
+public/sps.json

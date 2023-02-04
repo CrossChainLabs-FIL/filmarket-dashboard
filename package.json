@@ -28,7 +28,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "deploy": "tar -czf build.tgz build/*"
+    "deploy": "zip -r build.zip build/*"
   },
   "eslintConfig": {
     "extends": [
